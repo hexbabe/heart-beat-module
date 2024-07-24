@@ -1,0 +1,5 @@
+.installed
+viam-env
+.venv
+
+src/__pycache__
