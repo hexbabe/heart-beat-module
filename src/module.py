@@ -1,3 +1,4 @@
+import asyncio
 from threading import Thread
 import time
 from typing import Any, ClassVar, Coroutine, List, Mapping, SupportsBytes, SupportsFloat
@@ -16,7 +17,7 @@ LOGGER = getLogger(__name__)
 class HeartBeat(Thread):
     def __init__(self):
         super().__init__()
-        LOGGER.info("Initializing separate thread to log stuff every second (this will not log)")
+        LOGGER.info("Initializing separate thread to log stuff every second (this will log surprisingly?)")
         self.should_exec = True
         self.count = 0
     
@@ -52,7 +53,8 @@ class HeartBeatModule(Generic):
         return {
             "count": self.heart_beat.count
         }
-    
+
     def close(self):
         LOGGER.info("Closing component (this will log)")
         self.heart_beat.should_exec = False
+        self.heart_beat.join()
