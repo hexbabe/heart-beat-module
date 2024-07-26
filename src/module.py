@@ -54,7 +54,7 @@ class HeartBeatModule(Generic):
             "count": self.heart_beat.count
         }
 
-    def close(self):
+    async def close(self):
         LOGGER.info("Closing component (this will log)")
         self.heart_beat.should_exec = False
         self.heart_beat.join()
