@@ -1,7 +1,7 @@
 import asyncio
 from threading import Thread
 import time
-from typing import Any, ClassVar, Coroutine, List, Mapping, SupportsBytes, SupportsFloat
+from typing import Any, ClassVar, Coroutine, List, Mapping, SupportsBytes, SupportsFloat, Optional
 from typing_extensions import Self
 
 from viam.proto.app.robot import ComponentConfig
@@ -9,6 +9,7 @@ from viam.proto.common import ResourceName
 from viam.components.generic import Generic
 from viam.resource.base import ResourceBase
 from viam.resource.types import Model, ModelFamily
+from viam.utils import ValueTypes
 
 from viam.logging import getLogger
 
@@ -51,7 +52,7 @@ class HeartBeatModule(Generic):
     def validate(cls, config: ComponentConfig):
         LOGGER.info("Validating (this will log)")
 
-    async def do_command(self, command: Mapping[str, bool | SupportsBytes | SupportsFloat | List | Mapping | str | None], *, timeout: float | None = None, **kwargs) -> Coroutine[Any, Any, Mapping[str, bool | SupportsBytes | SupportsFloat | List | Mapping | str | None]]:
+    async def do_command(self, command: Mapping[str, ValueTypes], *, timeout: Optional[float] = None, **kwargs) -> Coroutine[Any, Any, Mapping[str, ValueTypes]]:
         LOGGER.info("Pinged do_command (this will log)")
         return {
             "count": self.heart_beat.count
