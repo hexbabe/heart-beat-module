@@ -1,4 +1,3 @@
-import asyncio
 from threading import Thread
 import time
 from typing import Any, ClassVar, Coroutine, List, Mapping, SupportsBytes, SupportsFloat, Optional
@@ -26,7 +25,7 @@ class HeartBeat(Thread):
         while self.should_exec:
             LOGGER.debug(f"This is a log that should log repeatedly, but does not. Count: {self.count}")
             LOGGER.info(f"This is a log that should log repeatedly, but does not. Count: {self.count}")
-            LOGGER.warn(f"This is a log that should log repeatedly, but does not. Count: {self.count}")
+            LOGGER.warning(f"This is a log that should log repeatedly, but does not. Count: {self.count}")
             LOGGER.error(f"This is a log that should log repeatedly, but does not. Count: {self.count}")
             self.count += 1
             time.sleep(1)
