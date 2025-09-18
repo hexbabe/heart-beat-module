@@ -2,6 +2,7 @@ from PIL import Image
 from typing import Any, ClassVar, Dict, List, Mapping, Optional, Sequence
 
 from typing_extensions import Self
+from viam.components.camera import Camera
 from viam.logging import getLogger
 from viam.media.video import ViamImage, CameraMimeType
 from viam.media.utils.pil import pil_to_viam_image
@@ -12,7 +13,7 @@ from viam.proto.service.vision import Classification, Detection
 from viam.resource.base import ResourceBase
 from viam.resource.types import Model, ModelFamily
 from viam.services.vision import CaptureAllResult, Vision
-from viam.utils import ValueTypes
+from viam.utils import ValueTypes, struct_to_dict
 
 LOGGER = getLogger(__name__)
 
@@ -42,7 +43,20 @@ class FakeVision(Vision, Reconfigurable):
     def reconfigure(
         self, config: ServiceConfig, dependencies: Mapping[ResourceName, ResourceBase]
     ):
-        return
+        attrs = struct_to_dict(config.attributes)
+        camera_name = attrs.get("camera_name")
+        
+        if not camera_name:
+            raise ValueError("Camera name is required but not provided")
+        
+        camera_resource_name = Camera.get_resource_name(camera_name)
+        camera = dependencies.get(camera_resource_name)
+        
+        if not camera:
+            raise ValueError(f"Camera '{camera_name}' not found in dependencies")
+        
+        self.camera_name = camera_name
+        self.camera: Camera = camera
 
     async def get_properties(
         self,
@@ -67,13 +81,10 @@ class FakeVision(Vision, Reconfigurable):
         extra: Optional[Mapping[str, Any]] = None,
         timeout: Optional[float] = None,
     ):
-        img = Image.new("RGB", (640, 480), color=(255, 255, 255))  # create a blank white image
-        classifications = []  # no classifications for a blank image
-        detections = []  # no detections for a blank image
-
-        viam_img = pil_to_viam_image(img, mime_type=CameraMimeType.JPEG)
+        img = await self.camera.get_image(timeout=timeout)
+        # dumb
         return CaptureAllResult(
-            image=viam_img, classifications=classifications, detections=detections
+            image=img, classifications=[], detections=[]
         )
 
     async def get_object_point_clouds(

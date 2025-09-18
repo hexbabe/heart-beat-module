@@ -50,6 +50,7 @@ class HeartBeatModule(Generic):
     @classmethod
     def validate(cls, config: ComponentConfig):
         LOGGER.info("Validating (this will log)")
+        return [], []
 
     async def do_command(self, command: Mapping[str, ValueTypes], *, timeout: Optional[float] = None, **kwargs) -> Coroutine[Any, Any, Mapping[str, ValueTypes]]:
         LOGGER.info("Pinged do_command (this will log)")

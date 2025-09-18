@@ -1,2 +1,2 @@
-viam-sdk==0.29.1
+viam-sdk==0.55.1
 pillow
